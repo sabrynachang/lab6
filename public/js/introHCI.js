@@ -19,7 +19,7 @@ function initializePage() {
  */
 function addProjectDetails(e) {
 	// Prevent following the link
-	e.preventDefault();
+	//e.preventDefault();
 
 	// Get the div ID, e.g., "project3"
 	var projectID = $(this).closest('.project').attr('id');
@@ -27,6 +27,12 @@ function addProjectDetails(e) {
 	var idNumber = projectID.substr('project'.length);
 
 	console.log("User clicked on project " + idNumber);
+
+	var url = "/project/"+idNumber;
+
+	console.log("AJAX: calling"+url);
+
+	$.get(url, temp);
 }
 
 /*
@@ -35,4 +41,39 @@ function addProjectDetails(e) {
  */
 function randomizeColors(e) {
 	console.log("User clicked on color button");
+	$.get("/palette", getPallete)
 }
+
+function getPallete(result) {
+	var colors=result['colors']['hex'];
+	$('body').css('background-color', colors[0]);
+	$('.thumbnail').css('background-color', colors[1]);
+	$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+	$('p').css('color', colors[3]);
+	$('.project img').css('opacity', .75);
+}
+
+function temp(result) {
+	var projectHTML =
+    '<img src="' + result['image'] + '" class="detailsImage">' +
+    '<p>' + result['title'] + '</p>' +
+    '<p><small>' + result['date'] +
+    '</small></p>'+result['summary']; 
+
+    console.log("html test:" + projectHTML);
+    //console.log("#project" + result['id']+".details");
+    //$("#project" + result['id']+" .details").html("foo");
+
+	$("#project" + result['id']+" .details").html(projectHTML);
+}
+
+function addProject(result) {
+  var projectHTML = '<a href="#" class="thumbnail">' +
+    '<img src="' + result['image'] + '" class="detailsImage">' +
+    '<p>' + result['title'] + '</p>' +
+    '<p><small>' + result['date'] +
+    '</small></p></a>'; 
+}
+
+
+
